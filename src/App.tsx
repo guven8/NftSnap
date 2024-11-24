@@ -22,7 +22,7 @@ function App() {
     <div className="bg-gray-900 text-white min-h-screen">
       <header className="bg-gray-800 text-white py-4 shadow-md">
         <div className="max-w-1440 mx-auto px-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold tracking-wide">NFTIVERSE</h1>
+          <h1 className="text-2xl font-bold tracking-wide">Meta Mint</h1>
         </div>
       </header>
       <main className="max-w-1440 mx-auto px-4 py-8">
