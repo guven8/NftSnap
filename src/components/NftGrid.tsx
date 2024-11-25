@@ -8,9 +8,13 @@ interface NFTGridProps {
 }
 
 const NFTGrid: React.FC<NFTGridProps> = ({ events, onSelectEvent }) => {
+  const sortedEvents = [...events].sort(
+    (a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime()
+  );
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {events.map((event, index) => (
+      {sortedEvents.map((event, index) => (
         <div
           key={index}
           onClick={() => onSelectEvent(event)}
