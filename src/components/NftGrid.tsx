@@ -8,15 +8,21 @@ interface NFTGridProps {
 }
 
 const NFTGrid: React.FC<NFTGridProps> = ({ events, onSelectEvent }) => {
-  const sortedEvents = [...events].sort(
-    (a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime()
-  );
+  const sortedEvents = [...events]
+    .filter(
+      (event) =>
+        event.payload.item.metadata.animation_url ||
+        event.payload.item.metadata.image_url
+    )
+    .sort(
+      (a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime()
+    );
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {sortedEvents.map((event, index) => (
+      {sortedEvents.map((event) => (
         <div
-          key={index}
+          key={event.payload.item.nft_id}
           onClick={() => onSelectEvent(event)}
           className="cursor-pointer bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
         >
