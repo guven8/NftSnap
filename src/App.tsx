@@ -19,7 +19,7 @@ function App() {
       setIsLoading(false);
     };
 
-    const client = openSeaClient(handleError);
+    const client = openSeaClient();
 
     try {
       client.onItemSold("*", (event) => {
