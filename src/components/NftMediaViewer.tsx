@@ -34,6 +34,7 @@ const NftMediaViewer = ({
           controls
           autoPlay
           muted
+          loop
           src={event.payload.item.metadata.animation_url!}
         />
       ) : (
