@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ItemSoldEvent } from "@opensea/stream-js";
 import { openSeaClient } from "./lib/openSea";
 import Modal from "./components/Modal";
+import NftMediaViewer from "./components/NftMediaViewer";
 
 function App() {
   const [events, setEvents] = useState<ItemSoldEvent[]>([]);
@@ -12,13 +13,13 @@ function App() {
   );
 
   useEffect(() => {
-    const handleConnectionError = (error: any) => {
+    const handleError = (error: any) => {
       console.error("OpenSea Stream Error:", error);
       setError("Failed to connect to OpenSea. Please try again later.");
       setIsLoading(false);
     };
 
-    const client = openSeaClient(handleConnectionError);
+    const client = openSeaClient(handleError);
 
     try {
       client.onItemSold("*", (event) => {
@@ -27,9 +28,7 @@ function App() {
         setIsLoading(false);
       });
     } catch (err) {
-      console.error("Error connecting to OpenSea:", err);
-      setError("Failed to load data. Please try again later.");
-      setIsLoading(false);
+      handleError(err);
     }
 
     return () => {
@@ -59,49 +58,41 @@ function App() {
         )}
         {!isLoading && !error && events.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {events
-              .filter((event) => event.payload.item.metadata.image_url) // Filter out events with no image
-              .map((event, index) => (
-                <div
-                  key={index}
-                  onClick={() => setSelectedEvent(event)}
-                  className="cursor-pointer bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-                >
-                  <img
-                    src={
-                      event.payload.item.metadata.image_url || "placeholder.jpg"
-                    }
-                    alt={event.payload.item.metadata.name || "Unnamed NFT"}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold truncate">
-                      {event.payload.item.metadata.name || "Unnamed NFT"}
-                    </h3>
-                    <p className="text-gray-400 mt-2">
-                      Sold for{" "}
-                      <span className="text-yellow-400">
-                        {parseFloat(
-                          event.payload.payment_token.eth_price || "0"
-                        )
-                          .toFixed(6)
-                          .replace(/\.?0+$/, "")}{" "}
-                        ETH
-                      </span>
-                    </p>
-                    <p className="text-gray-400 mt-1">
-                      (~$
-                      {parseFloat(
-                        event.payload.payment_token.usd_price || "0"
-                      ).toFixed(2)}
-                      )
-                    </p>
-                  </div>
+            {events.map((event, index) => (
+              <div
+                key={index}
+                onClick={() => setSelectedEvent(event)}
+                className="cursor-pointer bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+              >
+                <NftMediaViewer
+                  event={event}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold truncate">
+                    {event.payload.item.metadata.name || "Unnamed NFT"}
+                  </h3>
+                  <p className="text-gray-400 mt-2">
+                    Sold for{" "}
+                    <span className="text-yellow-400">
+                      {parseFloat(event.payload.payment_token.eth_price || "0")
+                        .toFixed(6)
+                        .replace(/\.?0+$/, "")}{" "}
+                      ETH
+                    </span>
+                  </p>
+                  <p className="text-gray-400 mt-1">
+                    (~$
+                    {parseFloat(
+                      event.payload.payment_token.usd_price || "0"
+                    ).toFixed(2)}
+                    )
+                  </p>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         )}
-
         {!isLoading && !error && events.length === 0 && (
           <div className="text-center text-gray-400">
             <p>No NFTs available at the moment.</p>
@@ -112,7 +103,7 @@ function App() {
       {/* Modal */}
       {selectedEvent && (
         <Modal isOpen={true} closeModal={closeModal}>
-          <>
+          <div className="bg-gray-800 text-white p-6 rounded-lg max-w-lg w-full shadow-lg">
             <button
               onClick={closeModal}
               className="absolute top-4 right-4 text-gray-400 hover:text-white text-3xl"
@@ -122,12 +113,8 @@ function App() {
             <h2 className="text-2xl font-bold mb-4">
               {selectedEvent.payload.item.metadata.name || "Unnamed NFT"}
             </h2>
-            <img
-              src={
-                selectedEvent.payload.item.metadata.image_url ||
-                "placeholder.jpg"
-              }
-              alt={selectedEvent.payload.item.metadata.name || "Unnamed NFT"}
+            <NftMediaViewer
+              event={selectedEvent}
               className="w-full h-64 object-cover rounded mb-4"
             />
             <p>
@@ -186,7 +173,7 @@ function App() {
                 View on Explorer
               </a>
             </p>
-          </>
+          </div>
         </Modal>
       )}
     </div>
