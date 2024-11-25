@@ -12,7 +12,13 @@ function App() {
   );
 
   useEffect(() => {
-    const client = openSeaClient();
+    const handleConnectionError = (error: any) => {
+      console.error("OpenSea Stream Error:", error);
+      setError("Failed to connect to OpenSea. Please try again later.");
+      setIsLoading(false);
+    };
+
+    const client = openSeaClient(handleConnectionError);
 
     try {
       client.onItemSold("*", (event) => {
