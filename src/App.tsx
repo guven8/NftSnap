@@ -4,14 +4,23 @@ import { openSeaClient } from "./lib/openSea";
 
 function App() {
   const [events, setEvents] = useState<ItemSoldEvent[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const client = openSeaClient();
 
-    client.onItemSold("*", (event) => {
-      console.log("Item sold:", event);
-      setEvents((prevEvents) => [...prevEvents, event]);
-    });
+    try {
+      client.onItemSold("*", (event) => {
+        console.log("Item sold:", event);
+        setEvents((prevEvents) => [...prevEvents, event]);
+        setIsLoading(false);
+      });
+    } catch (err) {
+      console.error("Error connecting to OpenSea:", err);
+      setError("Failed to load data. Please try again later.");
+      setIsLoading(false);
+    }
 
     return () => {
       client.disconnect();
@@ -26,31 +35,53 @@ function App() {
         </div>
       </header>
       <main className="max-w-1440 mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {events.map((event, index) => (
-            <div
-              key={index}
-              className="bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
-            >
-              <img
-                src={event.payload.item.metadata.image_url || "placeholder.jpg"}
-                alt={event.payload.item.metadata.name || "Unnamed NFT"}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold truncate">
-                  {event.payload.item.metadata.name || "Unnamed NFT"}
-                </h3>
-                <p className="text-gray-400 mt-2">
-                  Sold for{" "}
-                  <span className="text-yellow-400">
-                    {event.payload.payment_token.eth_price || "0.0"} ETH
-                  </span>
-                </p>
+        {error && (
+          <div className="text-center text-red-500">
+            <p>{error}</p>
+          </div>
+        )}
+
+        {!error && isLoading && (
+          <div className="text-center text-gray-400">
+            <p>Loading NFTs...</p>
+          </div>
+        )}
+
+        {!isLoading && !error && events.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {events.map((event, index) => (
+              <div
+                key={index}
+                className="bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
+              >
+                <img
+                  src={
+                    event.payload.item.metadata.image_url || "placeholder.jpg"
+                  }
+                  alt={event.payload.item.metadata.name || "Unnamed NFT"}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold truncate">
+                    {event.payload.item.metadata.name || "Unnamed NFT"}
+                  </h3>
+                  <p className="text-gray-400 mt-2">
+                    Sold for{" "}
+                    <span className="text-yellow-400">
+                      {event.payload.payment_token.eth_price || "0.0"} ETH
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {!isLoading && !error && events.length === 0 && (
+          <div className="text-center text-gray-400">
+            <p>No NFTs available at the moment.</p>
+          </div>
+        )}
       </main>
     </div>
   );
