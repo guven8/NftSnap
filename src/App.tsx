@@ -5,6 +5,8 @@ import NFTGrid from "./components/NftGrid";
 import NFTModal from "./components/NftModal";
 import NSFWWarning from "./components/NftWarning";
 
+export const MAX_EVENTS = 100;
+
 function App() {
   const [events, setEvents] = useState<ItemSoldEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +27,7 @@ function App() {
     try {
       client.onItemSold("*", (event) => {
         console.log("Item sold:", event);
-        setEvents((prevEvents) => [...prevEvents, event]);
+        setEvents((prevEvents) => [event, ...prevEvents].slice(0, MAX_EVENTS));
         setIsLoading(false);
       });
     } catch (err) {

@@ -1,6 +1,7 @@
 import React from "react";
 import { ItemSoldEvent } from "@opensea/stream-js";
 import NftMediaViewer from "./NftMediaViewer";
+import { MAX_EVENTS } from "../App";
 
 interface NFTGridProps {
   events: ItemSoldEvent[];
@@ -8,8 +9,6 @@ interface NFTGridProps {
 }
 
 const NFTGrid: React.FC<NFTGridProps> = ({ events, onSelectEvent }) => {
-  const MAX_EVENTS = 100;
-
   const sortedEvents = [...events]
     .filter(
       (event) =>
