@@ -8,6 +8,8 @@ interface NFTGridProps {
 }
 
 const NFTGrid: React.FC<NFTGridProps> = ({ events, onSelectEvent }) => {
+  const MAX_EVENTS = 100;
+
   const sortedEvents = [...events]
     .filter(
       (event) =>
@@ -16,7 +18,8 @@ const NFTGrid: React.FC<NFTGridProps> = ({ events, onSelectEvent }) => {
     )
     .sort(
       (a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime()
-    );
+    )
+    .slice(0, MAX_EVENTS);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
