@@ -25,5 +25,6 @@ MetaMint is a real-time NFT marketplace tracker that showcases the latest NFT sa
 To run the app in development mode:
 
 ```bash
+npm run init
 npm run dev
 ```
