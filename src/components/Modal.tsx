@@ -41,6 +41,12 @@ const Modal = ({ isOpen, closeModal, children }: ModalProps) => {
         ref={modalRef}
         className="bg-gray-800 text-white p-6 rounded-lg max-w-lg w-full shadow-lg relative"
       >
+        <button
+          onClick={closeModal}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white text-3xl"
+        >
+          &times;
+        </button>
         {children}
       </div>
     </div>

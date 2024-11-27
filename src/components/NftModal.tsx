@@ -13,13 +13,7 @@ const NFTModal: React.FC<NFTModalProps> = ({ isOpen, closeModal, event }) => {
 
   return (
     <Modal isOpen={true} closeModal={closeModal}>
-      <div className="bg-gray-800 text-white p-6 rounded-lg max-w-lg w-full shadow-lg">
-        <button
-          onClick={closeModal}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white text-3xl"
-        >
-          &times;
-        </button>
+      <>
         <h2 className="text-2xl font-bold mb-4">
           {event.payload.item.metadata.name || "Unnamed NFT"}
         </h2>
@@ -77,7 +71,7 @@ const NFTModal: React.FC<NFTModalProps> = ({ isOpen, closeModal, event }) => {
             View on Explorer
           </a>
         </p>
-      </div>
+      </>
     </Modal>
   );
 };
