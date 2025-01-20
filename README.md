@@ -1,6 +1,6 @@
-# MetaMint
+# NftSnap
 
-MetaMint is a real-time NFT marketplace tracker that showcases the latest NFT sales. Powered by OpenSea's WebSocket API.
+NftSnap is a real-time NFT marketplace tracker that showcases the latest NFT sales. Powered by OpenSea's WebSocket API.
 
 [Visit the website here!](https://metamint-9sts.vercel.app/)
 
@@ -14,7 +14,7 @@ MetaMint is a real-time NFT marketplace tracker that showcases the latest NFT sa
 
 ## Screenshot
 
-![MetaMint Homepage](./src/assets/homePage.png)
+![NftSnap Homepage](./src/assets/homePage.png)
 
 ---
 
